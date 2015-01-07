@@ -7,9 +7,13 @@
 //
 
 import UIKit
+import LocalAuthentication
 
 class ViewController: UIViewController {
 
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -21,5 +25,46 @@ class ViewController: UIViewController {
     }
 
 
+    func showAlertController(message: String) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .Alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .Default, handler: nil))
+        presentViewController(alertController, animated: true, completion: nil)
+    }
+    
+    
+    
+    @IBAction func authenticateButtonPressed(sender: AnyObject) {
+    
+        // 1
+        let context = LAContext()
+        var error: NSError?
+        
+        // 2
+        // check if Touch ID is available
+        if context.canEvaluatePolicy(.DeviceOwnerAuthenticationWithBiometrics, error: &error) {
+            // 3
+            let reason = "Authentifizierung mit Touch ID"
+            context.evaluatePolicy(.DeviceOwnerAuthenticationWithBiometrics, localizedReason: reason, reply:
+                {(succes: Bool, error: NSError!) in
+                    // 4
+                    if succes {
+                        self.showAlertController("Touch ID Authentication Succeeded")
+                    }
+                    else {
+                        self.showAlertController("Touch ID Authentication Failed")
+                    }
+            })
+        }
+            // 5
+        else {
+            showAlertController("Touch ID not available")
+        }
+    
+    
+    
+    
+    
+    
+    }
 }
 
